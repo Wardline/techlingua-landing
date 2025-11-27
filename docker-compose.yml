@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  techlingua-landing:
+    build: .
+    container_name: techlingua-landing
+    restart: unless-stopped
+    ports:
+      - "8083:8000"
+    volumes:
+      - ./data:/app/data

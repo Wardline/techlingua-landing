@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>TechLingua</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head><body>
+<h1>TechLingua — технический английский для IT</h1>
+<p>Лендинг для проверки гипотезы.</p>
+<button id="cta">Хочу попасть в ранний доступ</button>
+<p>Уже оставили заявку: <span id="count">{{ count }}</span></p>
+<script>
+async function clickCTA(){
+  const r = await fetch('/api/interest',{method:'POST'});
+  const d = await r.json();
+  document.getElementById('count').textContent = d.count;
+}
+document.getElementById('cta').addEventListener('click', clickCTA);
+</script>
+</body></html>
