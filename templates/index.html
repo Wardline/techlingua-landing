@@ -1,16 +1,234 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>TechLingua</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head><body>
-<h1>TechLingua — технический английский для IT</h1>
-<p>Лендинг для проверки гипотезы.</p>
-<button id="cta">Хочу попасть в ранний доступ</button>
-<p>Уже оставили заявку: <span id="count">{{ count }}</span></p>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>TechLingua — технический английский для IT-специалистов и студентов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<header class="hero">
+    <div class="container hero__content">
+        <div class="hero__text">
+            <h1>TechLingua — технический английский для тех, кто пишет код, а не сочинения</h1>
+            <p class="hero__subtitle">
+                Платформа для студентов и джунов, которым нужно понимать документацию, таски и переписку на английском,
+                а не просто проходить учебники по грамматике.
+            </p>
+            <button id="cta-top" class="btn btn-primary">
+                Хочу попасть в ранний доступ
+            </button>
+            <p class="hero__note">
+                Мы готовим пилот для ранних пользователей. Оставив заявку, вы поможете нам проверить гипотезу —
+                а мы поможем вам с реальными IT-сценариями на английском.
+            </p>
+        </div>
+
+        <div class="hero__visual">
+            <div class="hero__bubble">
+                <span class="hero__bubble-text">EN for IT</span>
+            </div>
+            <div class="hero__devcard">
+                <p class="hero__code-line">
+                    <span class="hero__code-key">deadlock</span> = 
+                    <span class="hero__code-bad">"мертвый замок"</span>
+                </p>
+                <p class="hero__code-line">
+                    <span class="hero__code-key">deadlock</span> = 
+                    <span class="hero__code-good">"взаимная блокировка потоков"</span>
+                </p>
+                <p class="hero__code-comment">
+                    // TechLingua помогает понимать смысл, а не только перевод
+                </p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Блок: проблема -->
+    <section class="section section--light">
+        <div class="container">
+            <h2>В чём проблема?</h2>
+            <div class="grid grid-2">
+                <div>
+                    <h3>Для студентов и джунов</h3>
+                    <ul class="list">
+                        <li>Требования, issues в трекере и README на английском — каждый раз нужен переводчик.</li>
+                        <li>На созвонах с заказчиком сложные термины пролетают мимо, теряется контекст.</li>
+                        <li>Курсы учат “present simple”, а не тому, как объяснить баг или архитектуру сервиса.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Для команд и компаний</h3>
+                    <ul class="list">
+                        <li>Неверное понимание ТЗ приводит к переделкам и лишним спринтам.</li>
+                        <li>Команды зависят от 1–2 “англоговорящих” людей, которые становятся узким местом.</li>
+                        <li>Специалисты без английского ограничены локальным рынком и рублёвыми ставками.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок: решение -->
+    <section class="section">
+        <div class="container">
+            <h2>Что предлагает TechLingua?</h2>
+            <div class="grid grid-3">
+                <div class="card">
+                    <h3>Реальные IT-сценарии</h3>
+                    <p>
+                        Обучение строится вокруг того, что реально происходит в работе: митинги, код-ревью, переписка в issue,
+                        ответы заказчику, работа с документацией и логами.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>Фокус на технический английский</h3>
+                    <p>
+                        Никакого “London is the capital…”. Только термины и конструкции, которые нужны разработчикам,
+                        DevOps, аналитикам и специалистам по ИБ.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3>Подстройка под стек и роль</h3>
+                    <p>
+                        Вы выбираете направление: Backend, DevOps, Data/ML, InfoSec. Платформа даёт задания, 
+                        построенные вокруг вашего стека, а не абстрактных тем.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок: для кого -->
+    <section class="section section--light">
+        <div class="container">
+            <h2>Для кого мы делаем этот продукт</h2>
+            <div class="grid grid-3">
+                <div class="card card--bordered">
+                    <h3>Студенты техвузов</h3>
+                    <p>
+                        Готовятся к стажировкам, собеседованиям и проектной работе, где документация и созвоны
+                        на английском, а не на русском.
+                    </p>
+                </div>
+                <div class="card card--bordered">
+                    <h3>Джуны и мидлы</h3>
+                    <p>
+                        Уже решают реальные задачи, но чувствуют барьер, когда нужно объяснить проблему голосом или в письме,
+                        особенно если собеседник — из другой страны.
+                    </p>
+                </div>
+                <div class="card card--bordered">
+                    <h3>Самоучки и переключенцы</h3>
+                    <p>
+                        Выучили технологию по курсам и туториалам, но хотят системно прокачать язык под свои задачи в IT.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок: как это работает -->
+    <section class="section">
+        <div class="container">
+            <h2>Как работает TechLingua</h2>
+            <ol class="steps">
+                <li>
+                    <span>1</span>
+                    <div>
+                        <strong>Вы выбираете свою роль и стек</strong> — например, “Backend + Python”, “DevOps + Kubernetes”, “ML + MLOps”.
+                    </div>
+                </li>
+                <li>
+                    <span>2</span>
+                    <div>
+                        <strong>Проходите стартовую диагностику</strong>, чтобы понять текущий уровень технического английского 
+                        и типичные “слепые зоны”.
+                    </div>
+                </li>
+                <li>
+                    <span>3</span>
+                    <div>
+                        <strong>Получаете набор сценариев</strong> — созвоны, переписка, тикеты, объяснение архитектуры, 
+                        работа с логами и промптами для ИИ.
+                    </div>
+                </li>
+                <li>
+                    <span>4</span>
+                    <div>
+                        <strong>Отслеживаете прогресс</strong> — становится легче читать ТЗ, общаться на митингах и писать 
+                        понятные сообщения на английском.
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- Блок: проверка гипотезы + CTA -->
+    <section class="section section--accent">
+        <div class="container">
+            <h2>Сейчас мы проверяем гипотезу: технический английский действительно мешает работе?</h2>
+            <p class="lead">
+                Если вы студент, джун или разработчик, которому не хватает уверенности в техническом английском, 
+                мы будем рады видеть вас в числе ранних пользователей. 
+                Вы получите доступ к первым сценариям, а мы — честный фидбек о том, что работает, а что нет.
+            </p>
+
+            <div class="cta">
+                <button id="cta-bottom" class="btn btn-primary btn-lg">
+                    Хочу попасть в закрытый ранний доступ TechLingua
+                </button>
+                <p class="cta__counter">
+                    Уже оставили заявку: <span id="interest-count">{{ count }}</span> человек(а)
+                </p>
+                <p class="cta__note">
+                    На следующем шаге мы попросим контакт (e-mail или Telegram), чтобы пригласить вас, 
+                    когда платформа будет готова к тестированию.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <p>TechLingua — учебный проект по развитию технического английского для IT, 2025</p>
+        <p>Этот лендинг создан для проверки гипотезы о востребованности продукта.</p>
+    </div>
+</footer>
+
 <script>
-async function clickCTA(){
-  const r = await fetch('/api/interest',{method:'POST'});
-  const d = await r.json();
-  document.getElementById('count').textContent = d.count;
-}
-document.getElementById('cta').addEventListener('click', clickCTA);
+    async function handleCtaClick() {
+        try {
+            const response = await fetch('/api/interest', { method: 'POST' });
+            if (!response.ok) return;
+            const data = await response.json();
+            const countEl = document.getElementById('interest-count');
+            if (countEl && data.count !== undefined) {
+                countEl.textContent = data.count;
+            }
+            const buttons = [
+                document.getElementById('cta-top'),
+                document.getElementById('cta-bottom')
+            ];
+            buttons.forEach(btn => {
+                if (btn) {
+                    btn.textContent = 'Спасибо! Мы свяжемся с вами при запуске';
+                    btn.disabled = true;
+                    btn.classList.add('btn--disabled');
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const ctaTop = document.getElementById('cta-top');
+    const ctaBottom = document.getElementById('cta-bottom');
+    if (ctaTop) ctaTop.addEventListener('click', handleCtaClick);
+    if (ctaBottom) ctaBottom.addEventListener('click', handleCtaClick);
 </script>
-</body></html>
+</body>
+</html>
