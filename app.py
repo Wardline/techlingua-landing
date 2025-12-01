@@ -203,7 +203,7 @@ def guide():
     clicks, cookie_to_set = register_visit("guide")
 
     # если у тебя отдельный шаблон под guide — замени index.html на guide.html
-    resp = make_response(render_template("index.html", count=clicks))
+    resp = make_response(render_template("prompt_guide.html", count=clicks))
     if cookie_to_set:
         resp.set_cookie(cookie_to_set, "1", max_age=60 * 60 * 24 * 365, path="/")
     return resp
