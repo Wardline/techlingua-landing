@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Опрос TechLingua</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-page: #f4f5f7;
+            --bg-content: #ffffff;
+            --accent: #ff9c2b;
+            --accent-dark: #d97912;
+            --text-main: #1f2933;
+            --text-muted: #5f6c80;
+            --border-soft: #e0e4ea;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 32px 12px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg-page);
+            color: var(--text-main);
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--bg-content);
+            padding: 28px 26px 32px;
+            border-radius: 18px;
+            box-shadow:
+                0 18px 45px rgba(15, 23, 42, 0.18),
+                0 0 0 1px rgba(148, 163, 184, 0.25);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.7rem;
+        }
+
+        p.lead {
+            margin-top: 0.4rem;
+            font-size: 0.98rem;
+            color: var(--text-muted);
+        }
+
+        .field {
+            margin: 1rem 0;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .field small {
+            display: block;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        select,
+        textarea,
+        input[type="email"] {
+            width: 100%;
+            padding: 0.5rem 0.6rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-soft);
+            font-size: 0.96rem;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: grid;
+            gap: 0.35rem;
+            margin-top: 0.3rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.95rem;
+        }
+
+        button {
+            margin-top: 1.2rem;
+            padding: 0.55rem 1.4rem;
+            border-radius: 999px;
+            border: none;
+            background: var(--accent);
+            color: #111827;
+            font-weight: 600;
+            font-size: 0.98rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--accent-dark);
+        }
+
+        .thanks {
+            font-size: 1.05rem;
+            margin-top: 1.2rem;
+        }
+
+        .back-link {
+            margin-top: 1.2rem;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+
+        .back-link a {
+            color: var(--accent-dark);
+            text-decoration: none;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    {% if not submitted %}
+        <h1>Короткий опрос о теханглийском и ChatGPT</h1>
+        <p class="lead">
+            Помоги мне проверить гипотезу: теханглийский и понятные промпты реально улучшают работу с ИИ.
+            Ответы анонимны, e-mail опционален.
+        </p>
+
+        <form method="post" action="/survey">
+            <div class="field">
+                <label for="usefulness">Насколько полезным был этот гайд для твоей работы/учёбы?</label>
+                <div class="radio-group" id="usefulness">
+                    <label class="radio-item">
+                        <input type="radio" name="usefulness" value="1" required>
+                        1 — совсем не зашёл
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="usefulness" value="2">
+                        2 — чуть-чуть полезно
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="usefulness" value="3">
+                        3 — нормально, кое-что возьму
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="usefulness" value="4">
+                        4 — полезно, буду использовать фразы
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="usefulness" value="5">
+                        5 — очень полезно, таких материалов не хватает
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="llm_usage">Как часто ты используешь ChatGPT/Copilot или другие LLM в работе/учёбе?</label>
+                <select name="llm_usage" id="llm_usage" required>
+                    <option value="">Выбери вариант</option>
+                    <option value="rarely">Редко (1–2 раза в месяц)</option>
+                    <option value="sometimes">Иногда (1–2 раза в неделю)</option>
+                    <option value="often">Часто (несколько раз в неделю)</option>
+                    <option value="daily">Почти каждый день</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="main_problem">Что больше всего мешает тебе в техническом английском?</label>
+                <small>Например: терминология, устная речь, документация, переписка и т.п.</small>
+                <textarea name="main_problem" id="main_problem" placeholder="Коротко опиши главную боль"></textarea>
+            </div>
+
+            <div class="field">
+                <label>Готов(а) ли ты раз в неделю уделять 10–15 минут формату «гайд + мини-практика»?</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="ready_to_practice" value="yes" required>
+                        Да, это комфортный формат
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="ready_to_practice" value="maybe">
+                        Возможно, зависит от нагрузки
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="ready_to_practice" value="no">
+                        Скорее нет, не готов(а)
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Насколько тебе был бы интересен продукт вроде TechLingua?</label>
+                <small>Инструмент, который помогает формулировать промпты на теханглийском под реальные задачи.</small>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="product_interest" value="very_interested" required>
+                        Очень интересен, я бы пользовался(лась)
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="product_interest" value="somewhat_interested">
+                        Возможно интересен, хочу посмотреть демо
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="product_interest" value="not_interested">
+                        Скорее не интересен
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="email">E-mail (опционально)</label>
+                <small>Если хочешь ранний доступ или апдейт по TechLingua — оставь почту.</small>
+                <input type="email" name="email" id="email" placeholder="name@example.com">
+            </div>
+
+            <button type="submit">Отправить ответы</button>
+        </form>
+
+        <div class="back-link">
+            <a href="/guide">← Вернуться к гайду</a>
+        </div>
+    {% else %}
+        <h1>Спасибо за ответы 💛</h1>
+        <p class="thanks">
+            Твои ответы помогут понять, насколько реальна гипотеза про теханглийский и короткие форматы обучения.
+        </p>
+        <p class="lead">
+            Если хочешь вернуться к гайду или показать его коллегам — вот ссылка:
+        </p>
+        <div class="back-link">
+            <a href="/guide">← Вернуться к гайду</a>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>

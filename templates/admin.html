@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>TechLingua — админка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --bg-page: #0f172a;
+            --bg-content: #020617;
+            --card-bg: #020617;
+            --card-border: #1f2937;
+            --accent: #fbbf24;
+            --accent-soft: #facc15;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --danger: #f97373;
+            --success: #4ade80;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 20px 12px 32px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1e293b, #020617 55%);
+            color: var(--text-main);
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            letter-spacing: 0.03em;
+        }
+
+        .header-badge {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 16px;
+            padding: 12px 14px;
+            border: 1px solid var(--card-border);
+        }
+
+        .card h2 {
+            font-size: 1rem;
+            margin: 0 0 4px;
+        }
+
+        .card small {
+            color: var(--text-muted);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 0.9rem;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        .metric-value.accent {
+            color: var(--accent-soft);
+        }
+
+        .metric-value.success {
+            color: var(--success);
+        }
+
+        .metric-value.danger {
+            color: var(--danger);
+        }
+
+        .section-title {
+            margin: 18px 0 6px;
+            font-size: 1.1rem;
+        }
+
+        .section-sub {
+            margin: 0 0 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-block {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 14px;
+            padding: 10px 12px;
+            border: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        .stat-block h3 {
+            margin: 0 0 6px;
+            font-size: 0.95rem;
+        }
+
+        .stat-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .stat-list li {
+            display: flex;
+            justify-content: space-between;
+            margin: 2px 0;
+        }
+
+        .stat-list span.value {
+            color: var(--text-muted);
+        }
+
+        .stat-list span.count {
+            font-weight: 600;
+        }
+
+        .stat-list span.percent {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-left: 4px;
+        }
+
+        .table-wrapper {
+            margin-top: 14px;
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        thead {
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        th, td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #111827;
+            vertical-align: top;
+        }
+
+        th {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        tbody tr:nth-child(even) {
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        .cell-small {
+            white-space: nowrap;
+        }
+
+        .cell-problem {
+            max-width: 380px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid #1f2937;
+            background: #020617;
+            padding: 1px 8px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #4ade80;
+            margin-right: 4px;
+        }
+
+        a.link {
+            color: var(--accent-soft);
+            text-decoration: none;
+            font-size: 0.86rem;
+        }
+
+        a.link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 720px) {
+            .cell-problem {
+                max-width: 220px;
+            }
+            body {
+                padding: 16px 8px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="header">
+        <h1>TechLingua dashboard</h1>
+        <div class="header-badge">internal only · /admin</div>
+    </div>
+
+    <!-- Карточки по страницам -->
+    <div class="cards-row">
+        <div class="card">
+            <h2>Главная /</h2>
+            <small>Основная страница (лендинг, если будет)</small>
+            <div class="metric-row">
+                <div class="metric-label">Всего просмотров</div>
+                <div class="metric-value accent">
+                    {{ metrics["main"]["views_total"] }}
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-label">Уникальных</div>
+                <div class="metric-value success">
+                    {{ metrics["main"]["views_unique"] }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Гайд /guide</h2>
+            <small>Лонгрид с промптами</small>
+            <div class="metric-row">
+                <div class="metric-label">Всего просмотров</div>
+                <div class="metric-value accent">
+                    {{ metrics["guide"]["views_total"] }}
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-label">Уникальных</div>
+                <div class="metric-value success">
+                    {{ metrics["guide"]["views_unique"] }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Опрос /survey</h2>
+            <small>Форма проверки гипотезы</small>
+            <div class="metric-row">
+                <div class="metric-label">Всего просмотров</div>
+                <div class="metric-value accent">
+                    {{ metrics["survey"]["views_total"] }}
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-label">Уникальных</div>
+                <div class="metric-value success">
+                    {{ metrics["survey"]["views_unique"] }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Клики по кнопке</h2>
+            <small>Общий счётчик /api/interest</small>
+            <div class="metric-row">
+                <div class="metric-label">Всего кликов</div>
+                <div class="metric-value accent">
+                    {{ clicks }}
+                </div>
+            </div>
+            <div class="metric-row">
+                <div class="metric-label">Ответов в опросе</div>
+                <div class="metric-value">
+                    {{ survey_stats["total"] }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика по опросу -->
+    <h2 class="section-title">Опрос /survey</h2>
+    <p class="section-sub">
+        Всего ответов: <strong>{{ survey_stats["total"] }}</strong>.
+        Ниже распределения по ключевым вопросам.
+    </p>
+
+    <div class="stats-grid">
+        <div class="stat-block">
+            <h3>Полезность гайда (1–5)</h3>
+            <ul class="stat-list">
+                {% for item in survey_stats["usefulness"] %}
+                    <li>
+                        <span class="value">Оценка {{ item.value }}</span>
+                        <span class="count">
+                            {{ item.count }}<span class="percent">({{ item.percent }}%)</span>
+                        </span>
+                    </li>
+                {% endfor %}
+                {% if not survey_stats["usefulness"] %}
+                    <li><span class="value">Нет данных</span></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="stat-block">
+            <h3>Частота LLM (ChatGPT/Copilot)</h3>
+            <ul class="stat-list">
+                {% for item in survey_stats["llm_usage"] %}
+                    <li>
+                        <span class="value">{{ item.value }}</span>
+                        <span class="count">
+                            {{ item.count }}<span class="percent">({{ item.percent }}%)</span>
+                        </span>
+                    </li>
+                {% endfor %}
+                {% if not survey_stats["llm_usage"] %}
+                    <li><span class="value">Нет данных</span></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="stat-block">
+            <h3>Готовность к формату "гайд + 10–15 мин"</h3>
+            <ul class="stat-list">
+                {% for item in survey_stats["ready_to_practice"] %}
+                    <li>
+                        <span class="value">{{ item.value }}</span>
+                        <span class="count">
+                            {{ item.count }}<span class="percent">({{ item.percent }}%)</span>
+                        </span>
+                    </li>
+                {% endfor %}
+                {% if not survey_stats["ready_to_practice"] %}
+                    <li><span class="value">Нет данных</span></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="stat-block">
+            <h3>Интерес к продукту TechLingua</h3>
+            <ul class="stat-list">
+                {% for item in survey_stats["product_interest"] %}
+                    <li>
+                        <span class="value">{{ item.value }}</span>
+                        <span class="count">
+                            {{ item.count }}<span class="percent">({{ item.percent }}%)</span>
+                        </span>
+                    </li>
+                {% endfor %}
+                {% if not survey_stats["product_interest"] %}
+                    <li><span class="value">Нет данных</span></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Последние ответы -->
+    <h2 class="section-title">Последние ответы (до 20)</h2>
+    <p class="section-sub">
+        Для качественного анализа и проверки гипотезы. Текст боли немного урезан визуально.
+    </p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th class="cell-small">Время</th>
+                <th class="cell-small">Use</th>
+                <th class="cell-small">LLM</th>
+                <th class="cell-small">Формат</th>
+                <th class="cell-small">Интерес</th>
+                <th class="cell-problem">Боль / main_problem</th>
+                <th class="cell-small">E-mail</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if last_responses %}
+                {% for r in last_responses %}
+                    <tr>
+                        <td class="cell-small">
+                            {% if r.timestamp %}
+                                <span class="pill">
+                                    <span class="pill-dot"></span>{{ r.timestamp }}
+                                </span>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="cell-small">{{ r.usefulness or "—" }}</td>
+                        <td class="cell-small">{{ r.llm_usage or "—" }}</td>
+                        <td class="cell-small">{{ r.ready_to_practice or "—" }}</td>
+                        <td class="cell-small">{{ r.product_interest or "—" }}</td>
+                        <td class="cell-problem">
+                            {% if r.main_problem %}
+                                {{ r.main_problem }}
+                            {% else %}
+                                <span style="color: var(--text-muted)">не заполнено</span>
+                            {% endif %}
+                        </td>
+                        <td class="cell-small">
+                            {% if r.email %}
+                                {{ r.email }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 10px;">
+                        Пока нет ответов в опросе
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <p style="margin-top: 14px; font-size: 0.85rem; color: var(--text-muted);">
+        Быстрые ссылки:
+        <a class="link" href="/">/</a> ·
+        <a class="link" href="/guide">/guide</a> ·
+        <a class="link" href="/survey">/survey</a>
+    </p>
+</div>
+</body>
+</html>
