@@ -350,6 +350,7 @@ h1 {
     font-size: 0.95rem;
     font-family: inherit;
     box-sizing: border-box;
+    align-self: flex-start; /* фикс растягивания */
 }
 
 .cta-form__row input[type="email"]:focus {
