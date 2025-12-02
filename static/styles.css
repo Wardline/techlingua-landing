@@ -338,6 +338,8 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+
+    align-items: flex-start;
 }
 
 .cta-form__row input[type="email"] {
@@ -347,6 +349,7 @@ h1 {
     padding: 10px 14px;
     font-size: 0.95rem;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 .cta-form__row input[type="email"]:focus {
@@ -395,6 +398,8 @@ h1 {
 
     .cta-form__row input[type="email"] {
         width: 100%;
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 
     .btn.btn-lg {
@@ -402,4 +407,5 @@ h1 {
         justify-content: center;
     }
 }
+
 
