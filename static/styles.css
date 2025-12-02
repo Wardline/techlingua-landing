@@ -334,24 +334,22 @@ h1 {
     gap: 8px;
 }
 
-/* контейнер для инпута и кнопки */
 .cta-form__row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto; /* инпут растягивается, кнопка по содержимому */
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    align-items: center; /* по высоте элементы не тянут друг друга */
+
+    align-items: flex-start;
 }
 
-/* поле ввода e-mail */
 .cta-form__row input[type="email"] {
-    /* убираем flex: 1 1 220px; */
-    width: 100%;
-    box-sizing: border-box;
+    flex: 1 1 100px;
     border-radius: 999px;
     border: 1px solid rgba(15, 23, 42, 0.12);
     padding: 10px 14px;
     font-size: 0.95rem;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 .cta-form__row input[type="email"]:focus {
