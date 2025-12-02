@@ -467,5 +467,56 @@
         <a class="link" href="/survey">/survey</a>
     </p>
 </div>
+<!-- Заявки раннего доступа -->
+<h2 class="section-title">Заявки раннего доступа (лендинг)</h2>
+<p class="section-sub">
+    Всего заявок: <strong>{{ early_access_total }}</strong>.
+</p>
+
+<div class="table-wrapper">
+    <table>
+        <thead>
+        <tr>
+            <th class="cell-small">Время</th>
+            <th class="cell-small">E-mail</th>
+            <th class="cell-small">Источник</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if early_access_last %}
+            {% for lead in early_access_last %}
+                <tr>
+                    <td class="cell-small">
+                        {% if lead.timestamp %}
+                            <span class="pill">
+                                <span class="pill-dot"></span>{{ lead.timestamp }}
+                            </span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="cell-small">
+                        {% if lead.email %}
+                            {{ lead.email }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="cell-small">
+                        {{ lead.source or "landing" }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center; color: var(--text-muted); padding: 10px;">
+                    Пока нет заявок раннего доступа
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

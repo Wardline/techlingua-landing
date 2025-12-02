@@ -324,3 +324,82 @@ h1 {
         font-size: 1.7rem;
     }
 }
+
+/* форма раннего доступа */
+
+.cta-form {
+    max-width: 640px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cta-form__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cta-form__row input[type="email"] {
+    flex: 1 1 220px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.cta-form__row input[type="email"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px rgba(214, 125, 29, 0.25);
+}
+
+.cta-consent {
+    margin-top: 4px;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    max-width: 620px;
+}
+
+.cta-consent input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+.cta-error {
+    margin-top: 4px;
+    font-size: 0.84rem;
+    color: #b91c1c;
+}
+
+/* утилита для скрытого лейбла */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+@media (max-width: 768px) {
+    .cta-form__row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cta-form__row input[type="email"] {
+        width: 100%;
+    }
+
+    .btn.btn-lg {
+        width: 100%;
+        justify-content: center;
+    }
+}
+

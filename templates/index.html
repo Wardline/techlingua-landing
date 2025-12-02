@@ -167,7 +167,7 @@
     </section>
 
     <!-- Блок: проверка гипотезы + CTA -->
-    <section class="section section--accent">
+    <section class="section section--accent" id="early-access">
         <div class="container">
             <h2>Сейчас мы проверяем гипотезу: технический английский действительно мешает работе?</h2>
             <p class="lead">
@@ -177,19 +177,43 @@
             </p>
 
             <div class="cta">
-                <button id="cta-bottom" class="btn btn-primary btn-lg">
-                    Хочу попасть в закрытый ранний доступ TechLingua
-                </button>
-                <p class="cta__counter">
-                    Уже оставили заявку: <span id="interest-count">{{ count }}</span> человек(а)
-                </p>
-                <p class="cta__note">
-                    На следующем шаге мы попросим контакт (e-mail или Telegram), чтобы пригласить вас, 
-                    когда платформа будет готова к тестированию.
-                </p>
+                <form id="early-access-form" class="cta-form" novalidate>
+                    <div class="cta-form__row">
+                        <label for="early-email" class="visually-hidden">E-mail для приглашения</label>
+                        <input
+                            type="email"
+                            id="early-email"
+                            name="email"
+                            placeholder="name@example.com"
+                            required
+                        >
+                        <button id="cta-bottom" class="btn btn-primary btn-lg" type="submit">
+                            Хочу попасть в закрытый ранний доступ TechLingua
+                        </button>
+                    </div>
+
+                    <p class="cta__counter">
+                        Уже оставили заявку: <span id="interest-count">{{ count }}</span> человек(а)
+                    </p>
+
+                    <label class="cta-consent">
+                        <input type="checkbox" id="early-consent" required>
+                        <span>
+                            Отправляя форму, я соглашаюсь на обработку моих персональных данных
+                            и получение информационных сообщений о проекте TechLingua.
+                        </span>
+                    </label>
+
+                    <p class="cta__note">
+                        Мы используем e-mail только для связи по проекту TechLingua и не передаём его третьим лицам.
+                    </p>
+
+                    <p id="early-error" class="cta-error" aria-live="polite"></p>
+                </form>
             </div>
         </div>
     </section>
+
 </main>
 
 <footer class="footer">
@@ -200,35 +224,81 @@
 </footer>
 
 <script>
-    async function handleCtaClick() {
-        try {
-            const response = await fetch('/api/interest', { method: 'POST' });
-            if (!response.ok) return;
-            const data = await response.json();
-            const countEl = document.getElementById('interest-count');
-            if (countEl && data.count !== undefined) {
-                countEl.textContent = data.count;
-            }
-            const buttons = [
-                document.getElementById('cta-top'),
-                document.getElementById('cta-bottom')
-            ];
-            buttons.forEach(btn => {
-                if (btn) {
-                    btn.textContent = 'Спасибо! Мы свяжемся с вами при запуске';
-                    btn.disabled = true;
-                    btn.classList.add('btn--disabled');
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctaTop = document.getElementById('cta-top');
+        const earlySection = document.getElementById('early-access');
+        const emailInput = document.getElementById('early-email');
+        const consentCheckbox = document.getElementById('early-consent');
+        const form = document.getElementById('early-access-form');
+        const submitBtn = document.getElementById('cta-bottom');
+        const countEl = document.getElementById('interest-count');
+        const errorEl = document.getElementById('early-error');
+
+        // Верхняя кнопка — плавный скролл к форме
+        if (ctaTop && earlySection) {
+            ctaTop.addEventListener('click', (e) => {
+                e.preventDefault();
+                earlySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => {
+                    if (emailInput) emailInput.focus();
+                }, 400);
+            });
+        }
+
+        // Сабмит формы раннего доступа
+        if (form && submitBtn) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (errorEl) errorEl.textContent = '';
+
+                const email = emailInput ? emailInput.value.trim() : '';
+                const consent = consentCheckbox ? consentCheckbox.checked : false;
+
+                if (!email) {
+                    if (errorEl) errorEl.textContent = 'Пожалуйста, укажи e-mail.';
+                    if (emailInput) emailInput.focus();
+                    return;
+                }
+                if (!consent) {
+                    if (errorEl) errorEl.textContent = 'Нужно согласиться на обработку персональных данных.';
+                    if (consentCheckbox) consentCheckbox.focus();
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.classList.add('btn--disabled');
+                submitBtn.textContent = 'Отправляем...';
+
+                try {
+                    const resp = await fetch('/api/early-access', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, consent })
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error('Request failed');
+                    }
+
+                    const data = await resp.json();
+                    if (countEl && typeof data.count === 'number') {
+                        countEl.textContent = data.count;
+                    }
+
+                    submitBtn.textContent = 'Спасибо! Мы свяжемся с вами при запуске';
+                } catch (err) {
+                    console.error(err);
+                    if (errorEl) {
+                        errorEl.textContent = 'Что-то пошло не так. Попробуй ещё раз чуть позже.';
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('btn--disabled');
+                    submitBtn.textContent = 'Хочу попасть в закрытый ранний доступ TechLingua';
                 }
             });
-        } catch (e) {
-            console.error(e);
         }
-    }
-
-    const ctaTop = document.getElementById('cta-top');
-    const ctaBottom = document.getElementById('cta-bottom');
-    if (ctaTop) ctaTop.addEventListener('click', handleCtaClick);
-    if (ctaBottom) ctaBottom.addEventListener('click', handleCtaClick);
+    });
 </script>
+
 </body>
 </html>

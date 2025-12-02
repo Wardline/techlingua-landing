@@ -34,6 +34,9 @@ PAGES = {
 # результаты опроса
 SURVEY_FILE = DATA_DIR / "survey_results.json"
 
+# заявки раннего доступа с лендинга
+EARLY_ACCESS_FILE = DATA_DIR / "early_access.json"
+
 _lock = threading.Lock()
 
 
@@ -128,6 +131,37 @@ def load_survey_data():
     except Exception:
         return []
 
+def load_early_access():
+    """Читаем список заявок раннего доступа."""
+    if not EARLY_ACCESS_FILE.exists():
+        return []
+    try:
+        with open(EARLY_ACCESS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+            return []
+    except Exception:
+        return []
+
+
+def append_early_access(payload: dict) -> None:
+    """Добавляем одну заявку раннего доступа."""
+    with _lock:
+        EARLY_ACCESS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        rows = []
+        if EARLY_ACCESS_FILE.exists():
+            try:
+                with open(EARLY_ACCESS_FILE, "r", encoding="utf-8") as f:
+                    loaded = json.load(f)
+                    if isinstance(loaded, list):
+                        rows = loaded
+            except Exception:
+                rows = []
+        rows.append(payload)
+        with open(EARLY_ACCESS_FILE, "w", encoding="utf-8") as f:
+            json.dump(rows, f, ensure_ascii=False, indent=2)
+
 
 def build_survey_stats(rows: list[dict]) -> dict:
     """
@@ -188,10 +222,15 @@ def index():
     """
     clicks, cookie_to_set = register_visit("main")
 
-    resp = make_response(render_template("index.html", count=clicks))
+    # считаем именно количество заявок раннего доступа
+    leads = load_early_access()
+    count = len(leads)
+
+    resp = make_response(render_template("index.html", count=count))
     if cookie_to_set:
         resp.set_cookie(cookie_to_set, "1", max_age=60 * 60 * 24 * 365, path="/")
     return resp
+
 
 
 @app.route("/guide")
@@ -273,6 +312,9 @@ def admin():
         # опрос
         survey_rows = load_survey_data()
 
+        # заявки раннего доступа
+        early_access_rows = load_early_access()
+
     # статистика по опросу
     survey_stats = build_survey_stats(survey_rows)
 
@@ -287,12 +329,25 @@ def admin():
     survey_rows_sorted = sorted(survey_rows, key=parse_ts, reverse=True)
     last_responses = survey_rows_sorted[:20]
 
+    # заявки раннего доступа — сортируем по времени
+    def parse_ts_lead(r):
+        ts = r.get("timestamp", "")
+        try:
+            return datetime.fromisoformat(ts.replace("Z", ""))
+        except Exception:
+            return datetime.min
+
+    early_sorted = sorted(early_access_rows, key=parse_ts_lead, reverse=True)
+    early_last = early_sorted[:50]
+
     return render_template(
         "admin.html",
         metrics=metrics,
         clicks=clicks,
         survey_stats=survey_stats,
         last_responses=last_responses,
+        early_access_total=len(early_access_rows),
+        early_access_last=early_last,
     )
 
 
@@ -305,6 +360,38 @@ def api_interest():
         current = load_value(CLICKS_FILE) + 1
         save_value(CLICKS_FILE, current)
     return jsonify({"count": current})
+
+@app.post("/api/early-access")
+def api_early_access():
+    """
+    Принимает заявку раннего доступа с лендинга.
+    Ожидает JSON: {"email": "...", "consent": true}
+    """
+    data = request.get_json(silent=True) or {}
+    email = str(data.get("email", "")).strip()
+    consent = bool(data.get("consent"))
+
+    if not email or "@" not in email:
+        return jsonify({"ok": False, "error": "invalid_email"}), 400
+    if not consent:
+        return jsonify({"ok": False, "error": "no_consent"}), 400
+
+    payload = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "email": email,
+        "consent": consent,
+        "source": "landing",
+        "user_agent": request.headers.get("User-Agent", ""),
+    }
+    append_early_access(payload)
+
+    # обновляем общий счётчик интереса, чтобы /admin и лендинг видели рост
+    with _lock:
+        current = load_value(CLICKS_FILE) + 1
+        save_value(CLICKS_FILE, current)
+
+    leads = load_early_access()
+    return jsonify({"ok": True, "count": len(leads)})
 
 
 @app.get("/api/metrics")
