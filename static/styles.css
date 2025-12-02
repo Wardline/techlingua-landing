@@ -398,8 +398,9 @@ h1 {
 
     .cta-form__row input[type="email"] {
         width: 100%;
-        padding-top: 8px;
-        padding-bottom: 8px;
+        height: auto;
+        /* padding-top: 8px;
+        padding-bottom: 8px; */
     }
 
     .btn.btn-lg {
